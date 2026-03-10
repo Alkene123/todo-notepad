@@ -235,13 +235,13 @@ const getAuthHeader = () => {
     return token ? { 'Authorization': `Bearer ${token}` } : {};
 };
         
-        // DOM Elements
+        
         const todoInput = document.getElementById('todoInput');
         const addBtn = document.getElementById('addBtn');
         const todoList = document.getElementById('todoList');
         const progressBar = document.getElementById('progressBar');
 
-        // Fetch all todos from backend
+        
         async function fetchTodos() {
             try {
                 const response = await fetch(API_URL, {
@@ -256,7 +256,7 @@ const getAuthHeader = () => {
             }
         }
 
-        // Create a new todo
+        
         async function createTodo(title) {
             if (!title.trim()) return;
             
@@ -279,7 +279,7 @@ const getAuthHeader = () => {
             }
         }
 
-        // Delete a todo
+        
         async function deleteTodo(id) {
             try {
                 const response = await fetch(`${API_URL}/${id}`, {
@@ -297,7 +297,7 @@ const getAuthHeader = () => {
             }
         }
 
-        // Toggle todo completion - now calls backend API
+        
         async function toggleTodo(id) {
             try {
                 const response = await fetch(`${API_URL}/${id}`, {
