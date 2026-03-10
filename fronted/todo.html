@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Notepad</title>
+</head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: ' ';
+            background: linear-gradient(135deg, white 0%, ash  100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .notepad {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        h1 span {
+            font-size: 32px;
+        }
+        
+        .date {
+            text-align: center;
+            color: green;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        
+        .input-area {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+        
+        #todoInput {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid white;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        #todoInput:focus {
+            border-color: #6c5ce7;
+        }
+        
+        .add-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            background:blue;
+            color: white;
+            font-size: 24px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        
+        .todos-container {
+            min-height: 200px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        .todo-text {
+            flex: 1;
+            color: #333;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .delete-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: #01083a;
+            color: white;
+            border-radius: 70%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .delete-btn:hover {
+            background: #ee5253;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .progress {
+            flex: 1;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6c5ce7, #a29bfe);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .footer-notes {
+            text-align: center;
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+        
+        .nav-links {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .nav-links a {
+            color: #6c5ce7;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Scrollbar styling */
+        .todos-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .todos-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .todos-container::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+        
+        .todos-container::-webkit-scrollbar-thumb:hover {
+            background: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-links">
+        <a href="#" id="logoutBtn">Logout</a>
+    </div>
+    <div class="notepad">
+        <h1>
+           
+           Alkene todonotepad
+        </h1>
+        
+        <div class="date">
+            list of things you gatto do
+        </div>
+
+        <div class="input-area">
+            <input 
+                type="text" 
+                id="todoInput" 
+                placeholder="create somethin nice"
+                autocomplete="off"
+            >
+            <button class="add-btn" id="addBtn" title="Add to list">+</button>
+        </div>
+
+        <div class="todos-container" id="todoList">
+        
+        </div>
+
+        <div class="footer-notes">
+           click to add and x to remove
+        </div>
+    </div>
+    <button>logout</button>
+
+    <script>
+const API_URL = 'http://localhost:5000/api/v1/todos';
+
+// this is to get token from localStorage
+const getToken = () => localStorage.getItem('token');
+
+const getAuthHeader = () => {
+    const token = getToken();
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+};
+        
+        // DOM Elements
+        const todoInput = document.getElementById('todoInput');
+        const addBtn = document.getElementById('addBtn');
+        const todoList = document.getElementById('todoList');
+        const progressBar = document.getElementById('progressBar');
+
+        // Fetch all todos from backend
+        async function fetchTodos() {
+            try {
+                const response = await fetch(API_URL, {
+                    headers: {
+                        ...getAuthHeader()
+                    }
+                });
+                const data = await response.json();
+                renderTodos(data.todos || data);
+            } catch (error) {
+                console.error('Error fetching todos:', error);
+            }
+        }
+
+        // Create a new todo
+        async function createTodo(title) {
+            if (!title.trim()) return;
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...getAuthHeader()
+                    },
+                    body: JSON.stringify({ title, description: '' })
+                });
+                const data = await response.json();
+                if (data.success || data.todo) {
+                    fetchTodos();
+                    todoInput.value = '';
+                }
+            } catch (error) {
+                console.error('Error creating todo:', error);
+            }
+        }
+
+        // Delete a todo
+        async function deleteTodo(id) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        ...getAuthHeader()
+                    }
+                });
+                const data = await response.json();
+                if (data.success || data.message) {
+                    fetchTodos();
+                }
+            } catch (error) {
+                console.error('Error deleting todo:', error);
+            }
+        }
+
+        // Toggle todo completion - now calls backend API
+        async function toggleTodo(id) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...getAuthHeader()
+                    }
+                });
+                const data = await response.json();
+                if (data.success || data.todo) {
+                    // Update the todo's completed status in the UI
+                    const todoElement = document.querySelector(`[data-id="${id}"]`);
+                    if (todoElement) {
+                        todoElement.classList.toggle('completed');
+                    }
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('Error toggling todo:', error);
+            }
+        }
+
+        function renderTodos(todos) {
+            todoList.innerHTML = '';
+            
+            if (!todos || todos.length === 0) {
+                todoList.innerHTML = '<p style="text-align: center; color: #888;">No todos yet. Add one above!</p>';
+                updateStats();
+                return;
+            }
+
+            todos.forEach(todo => {
+                const todoItem = document.createElement('div');
+                todoItem.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+                todoItem.setAttribute('data-id', todo._id);
+                
+                todoItem.innerHTML = `
+                    <span class="todo-text" ondblclick="toggleTodo('${todo._id}')">${todo.title}</span>
+                    <button class="delete-btn" onclick="deleteTodo('${todo._id}')" title="Remove">✕</button>
+                `;
+                
+                todoList.appendChild(todoItem);
+            });
+
+            updateStats();
+        }
+
+        addBtn.addEventListener('click', () => createTodo(todoInput.value));
+        
+        todoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                createTodo(todoInput.value);
+            }
+        });
+
+        // Check if user is logged in
+        if (!localStorage.getItem('token')) {
+            window.location.href = 'login.html';
+        } else {
+            // Load todos on page load
+            fetchTodos();
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        });
+    </script>
+
+</body>
+</html>
