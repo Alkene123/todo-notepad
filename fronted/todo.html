@@ -188,11 +188,39 @@
         .todos-container::-webkit-scrollbar-thumb:hover {
             background: #aaa;
         }
+        .todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.todo-item {
+    margin-bottom: 10px;
+}
+
+.nav-links button {
+    background: none;
+    border: none;
+    color: #6c5ce7;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.nav-links button:hover {
+    text-decoration: underline;
+}
+
+
+body > button:last-of-type {
+    display: none;
+}
     </style>
 </head>
 <body>
     <div class="nav-links">
-        <a href="#" id="logoutBtn">Logout</a>
+        <div class="nav-links">
+    <button id="logoutBtn" >Logout</button>
+</div>
     </div>
     <div class="notepad">
         <h1>
@@ -241,7 +269,7 @@ const getAuthHeader = () => {
         const todoList = document.getElementById('todoList');
         const progressBar = document.getElementById('progressBar');
 
-        
+        // Fetch all todos from backend
         async function fetchTodos() {
             try {
                 const response = await fetch(API_URL, {
@@ -256,7 +284,7 @@ const getAuthHeader = () => {
             }
         }
 
-        
+        // Create a new todo
         async function createTodo(title) {
             if (!title.trim()) return;
             
@@ -279,7 +307,7 @@ const getAuthHeader = () => {
             }
         }
 
-        
+        // Delete a todo
         async function deleteTodo(id) {
             try {
                 const response = await fetch(`${API_URL}/${id}`, {
@@ -297,7 +325,7 @@ const getAuthHeader = () => {
             }
         }
 
-        
+        // Toggle todo completion - now calls backend API
         async function toggleTodo(id) {
             try {
                 const response = await fetch(`${API_URL}/${id}`, {
@@ -318,6 +346,21 @@ const getAuthHeader = () => {
                 }
             } catch (error) {
                 console.error('Error toggling todo:', error);
+            }
+        }
+
+        // Update stats (progress bar)
+        function updateStats() {
+            const todos = document.querySelectorAll('.todo-item');
+            const completedTodos = document.querySelectorAll('.todo-item.completed');
+            const total = todos.length;
+            const completed = completedTodos.length;
+            const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
+            
+            // Update progress bar if it exists
+            const progressBar = document.querySelector('.progress-bar');
+            if (progressBar) {
+                progressBar.style.width = percentage + '%';
             }
         }
 
