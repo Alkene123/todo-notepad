@@ -253,7 +253,9 @@ body > button:last-of-type {
     <button>logout</button>
 
     <script>
-const API_URL = 'http://localhost:5000/api/v1/todos';
+    const CONFIG = {
+        API_URL : 'https://basic-project-1.onrender.com'
+    }
 
 // this is to get token from localStorage
 const getToken = () => localStorage.getItem('token');
@@ -272,7 +274,7 @@ const getAuthHeader = () => {
         // Fetch all todos from backend
         async function fetchTodos() {
             try {
-                const response = await fetch(API_URL, {
+                const response = await fetch(CONFIG, {
                     headers: {
                         ...getAuthHeader()
                     }

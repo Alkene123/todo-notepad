@@ -90,7 +90,9 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000/api/v1';
+    const CONFIG = {
+        API_URL : 'https://basic-project-1.onrender.com'
+    }
         
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -104,7 +106,7 @@
             const messageDiv = document.getElementById('message');
             
             try {
-                const response = await fetch(`${API_URL}/register`, {
+                const response = await fetch(`${CONFIG.API_URL}/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
