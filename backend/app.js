@@ -9,7 +9,7 @@ import cookieParser from "cookie-parser";
 const app = express();
 
 app.use(cors({
-    origin: 'https://todo-notepad-frontend.onrender.com',
+origin: '*',
     credentials: true
 })); // Enable CORS for all routes
 app.use(express.json());//middleware to parse json data
