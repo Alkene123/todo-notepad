@@ -8,10 +8,9 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 
-app.use(cors({
-origin: '*',
-    credentials: true
-})); // Enable CORS for all routes
+app.use(cors());
+
+// Handle preflight requests
 app.use(express.json());//middleware to parse json data
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));//middleware to parse urlencoded data
