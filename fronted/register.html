@@ -91,7 +91,9 @@
 
     <script>
     const CONFIG = {
-        API_URL : 'https://todo-notepad-1-backend.onrender.com'
+        API_URL : window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3000' 
+            : 'https://todo-notepad-1-backend.onrender.com'
     }
         
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
@@ -114,6 +116,11 @@
                     body: JSON.stringify(data)
                 });
                 
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.message || `Server error: ${response.status}`);
+                }
+                
                 const result = await response.json();
                 
                 if (result.success) {
@@ -124,12 +131,12 @@
                         window.location.href = 'login.html';
                     }, 1500);
                 } else {
-                    messageDiv.textContent = result.message || 'Registration failed';
-                    messageDiv.className = 'message error';
-                    messageDiv.style.display = 'block';
+                    throw new Error(result.message || 'Registration failed');
                 }
             } catch (error) {
-                messageDiv.textContent = 'Error: ' + error.message;
+                messageDiv.textContent = error.message.includes('Failed to fetch')
+                    ? '⚠️ Server is waking up. Please wait 30 seconds and try again.'
+                    : 'Error: ' + error.message;
                 messageDiv.className = 'message error';
                 messageDiv.style.display = 'block';
             }
