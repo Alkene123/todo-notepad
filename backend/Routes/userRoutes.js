@@ -6,8 +6,8 @@ import { loginUser, logoutUser, registerUser, forgotPassword } from '../controll
 
 const router = express.Router();
 
-router.route('/register').post(registerUser);
-router.route('/login').post(loginUser);
-router.route('/logout').get(logoutUser);
+router.route('api/v1/register').post(registerUser);
+router.route('api/v1/login').post(loginUser);
+router.route('api/v1/logout').get(logoutUser);
 
 export default router;
