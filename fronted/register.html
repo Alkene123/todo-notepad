@@ -106,7 +106,7 @@
             const messageDiv = document.getElementById('message');
             
             try {
-                const response = await fetch(`${CONFIG.API_URL}/api/v1/register`, {
+                const response = await fetch(`${CONFIG.API_URL}/api/v1`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
