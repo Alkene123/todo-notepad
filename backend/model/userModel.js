@@ -63,7 +63,7 @@ userSchema.methods.getJWTToken = function () {
     const numericPart = parseInt(expireTime.replace(/[^0-9]/g, '')) || 5;
     // Determine the unit and convert to seconds
     const token = jwt.sign({_id: this._id}, process.env.JWT_SECRET, {
-        expiresIn: numericPart * 24 * 60 * 60 * 1000 // convert days to milliseconds
+        expiresIn: numericPart * 24 * 60 * 60 // convert days to seconds
     });
     return token;
 }
