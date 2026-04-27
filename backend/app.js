@@ -8,7 +8,11 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: '*', // or your frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Handle preflight requests
 app.use(express.json());//middleware to parse json data
