@@ -87,9 +87,7 @@
 
    <script>
 const CONFIG = {
-    API_URL: !window.location.hostname || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:3000'
-        : 'https://todo-notepad-1-backend.onrender.com'
+    API_URL: 'https://todo-notepad-1-backend.onrender.com'
 }
 
 console.log('Using API URL:', CONFIG.API_URL);
@@ -142,10 +140,15 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             throw new Error(result.message || 'Login failed');
         }
 
-    } catch (error) {
-        messageDiv.textContent = error.message.includes('Failed to fetch')
-            ? '⚠️ Server is waking up. Please wait 30 seconds and try again.'
-            : 'Error: ' + error.message;
+} catch (error) {
+        // Check if this is a file:// CORS issue
+        if (window.location.protocol === 'file:') {
+            messageDiv.innerHTML = '⚠️ Cannot open directly from disk.<br><br><b>To fix:</b> Upload the HTML files to your Render frontend, or use VSCode Live Server to open this HTML file instead of double-clicking it.';
+        } else if (error.message.includes('Failed to fetch')) {
+            messageDiv.textContent = '⚠️ Server is waking up. Please wait 30 seconds and try again.';
+        } else {
+            messageDiv.textContent = 'Error: ' + error.message;
+        }
         messageDiv.className = 'message error';
         messageDiv.style.display = 'block';
     } finally {
