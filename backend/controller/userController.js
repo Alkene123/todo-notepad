@@ -5,7 +5,7 @@ import HandleError from '../helper/errHandling.js';
 import jwt from 'jsonwebtoken';
 
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET || 'your-secret-key', {
+    return jwt.sign({ id }, process.env.JWT_SECRET || 35862, {
         expiresIn: '30d'
     });
 };
@@ -15,19 +15,12 @@ export const registerUser = async(req, res, next)=>{
    const {name,email,password}=req.body;
    
    if(!name || !email || !password){
-       return res.status(400).json({
-           success:false,
-           message:"Please provide all fields"
-       })
+      return new HandleError("fill  in the blank spaces",400)
    }
-   
    // Check if user already exists
    const oldUser = await User.findOne({email});
    if(oldUser){
-       return res.status(400).json({
-           success:false,
-           message:"User already exists"
-       })
+       return new HandleError("user already exist",400)
    }
    
    const user=await User.create({
@@ -68,10 +61,7 @@ export const loginUser= async (req, res, next)=>{
         const {email, password}=req.body;
     
     if(!email || !password){
-        return res.status(400).json({
-            success:false,
-            message:"Please provide email and password"
-        })
+        return new HandleError("email or password wrong",402)
     }
      const user =await User.findOne({email}).select('+password');
      
