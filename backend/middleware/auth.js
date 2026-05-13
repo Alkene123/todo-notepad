@@ -22,7 +22,7 @@ export const isAuthenticatedUser = async (req, res, next) => {
             });
         }
 
-        const decodedData = jwt.verify(token, process.env.JWT_SECRET || 53833);
+        const decodedData = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
 
         req.user = await User.findById(decodedData._id);
 

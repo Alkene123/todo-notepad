@@ -90,11 +90,9 @@
     </div>
 
     <script>
-const CONFIG = {
-        API_URL: 'https://todo-notepad-1-backend.onrender.com'
+    const CONFIG = {
+        API_URL : 'https://todo-notepad.onrender.com'
     }
-    
-    console.log('Using API URL:', CONFIG.API_URL);
         
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -108,18 +106,13 @@ const CONFIG = {
             const messageDiv = document.getElementById('message');
             
             try {
-                const response = await fetch(`${CONFIG.API_URL}/api/v1/register`, {
+                const response = await fetch(`${CONFIG.API_URL}/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(data)
                 });
-                
-                if (!response.ok) {
-                    const errData = await response.json().catch(() => ({}));
-                    throw new Error(errData.message || `Server error: ${response.status}`);
-                }
                 
                 const result = await response.json();
                 
@@ -131,17 +124,12 @@ const CONFIG = {
                         window.location.href = 'login.html';
                     }, 1500);
                 } else {
-                    throw new Error(result.message || 'Registration failed');
+                    messageDiv.textContent = result.message || 'Registration failed';
+                    messageDiv.className = 'message error';
+                    messageDiv.style.display = 'block';
                 }
-} catch (error) {
-                // Check if this is a file:// CORS issue
-                if (window.location.protocol === 'file:') {
-                    messageDiv.innerHTML = '⚠️ Cannot open directly from disk.<br><br><b>To fix:</b> Upload the HTML files to your Render frontend, or use VSCode Live Server to open this HTML file instead of double-clicking it.';
-                } else if (error.message.includes('Failed to fetch')) {
-                    messageDiv.textContent = '⚠️ Server is waking up. Please wait 30 seconds and try again.';
-                } else {
-                    messageDiv.textContent = 'Error: ' + error.message;
-                }
+            } catch (error) {
+                messageDiv.textContent = 'Error: ' + error.message;
                 messageDiv.className = 'message error';
                 messageDiv.style.display = 'block';
             }

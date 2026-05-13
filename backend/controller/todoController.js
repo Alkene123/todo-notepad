@@ -1,4 +1,3 @@
-import HandleError from '../helper/errHandling.js';
 import Todo from '../model/todoModel.js';
 
 // Get all todos
@@ -70,7 +69,10 @@ export const deleteTodo = async (req, res) => {
         const id = req.params.id;
         const deletedTodo = await Todo.findOneAndDelete({ _id: id, user: req.user._id })
         if (!deletedTodo) {
-            return new HandleError("todo not found",401)
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Todo not found' 
+            });
         }
         res.status(200).json({ 
             success: true, 

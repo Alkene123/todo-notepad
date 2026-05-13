@@ -5,7 +5,7 @@ import HandleError from '../helper/errHandling.js';
 import jwt from 'jsonwebtoken';
 
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET || 35862, {
+    return jwt.sign({ id }, process.env.JWT_SECRET || 'your-secret-key', {
         expiresIn: '30d'
     });
 };
@@ -15,12 +15,19 @@ export const registerUser = async(req, res, next)=>{
    const {name,email,password}=req.body;
    
    if(!name || !email || !password){
-      return new HandleError("fill  in the blank spaces",400)
+       return res.status(400).json({
+           success:false,
+           message:"Please provide all fields"
+       })
    }
+   
    // Check if user already exists
    const oldUser = await User.findOne({email});
    if(oldUser){
-       return new HandleError("user already exist",400)
+       return res.status(400).json({
+           success:false,
+           message:"User already exists"
+       })
    }
    
    const user=await User.create({
@@ -61,7 +68,10 @@ export const loginUser= async (req, res, next)=>{
         const {email, password}=req.body;
     
     if(!email || !password){
-        return new HandleError("email or password wrong",402)
+        return res.status(400).json({
+            success:false,
+            message:"Please provide email and password"
+        })
     }
      const user =await User.findOne({email}).select('+password');
      
@@ -94,7 +104,7 @@ export const loginUser= async (req, res, next)=>{
 }
 export const logoutUser= async (req, res, next)=>{
     const option={
-        httpOnly:true,
+        http:true,
         expires: new Date(Date.now()),
     };
     res.cookie('token',null,option)
