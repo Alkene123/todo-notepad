@@ -87,7 +87,7 @@
 
     <script>
     const CONFIG = {
-        API_URL: 'https://todo-notepad-1-backend.onrender.com'  // Your backend URL
+        API_URL: 'http://localhost:3000'  // Your backend URL
     }
     
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -102,7 +102,7 @@
         
         try {
             // ✅ FIXED: Use CONFIG.API_URL instead of API_URL
-            const response = await fetch(`${CONFIG.API_URL}/login`, {
+            const response = await fetch(`${CONFIG.API_URL}/api/v1/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -91,7 +91,7 @@
 
     <script>
     const CONFIG = {
-        API_URL : 'https://todo-notepad-1-backend.onrender.com'
+        API_URL : 'http://localhost:3000'
     }
         
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
@@ -106,7 +106,7 @@
             const messageDiv = document.getElementById('message');
             
             try {
-                const response = await fetch(`${CONFIG.API_URL}/register`, {
+                const response = await fetch(`${CONFIG.API_URL}/api/v1/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
