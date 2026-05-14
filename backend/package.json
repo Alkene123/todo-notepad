@@ -7,9 +7,9 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node api/server.js",
     "dev": "nodemon server.js",
-    "build": "cd fronted && npm run build"
+    "build": "cd frontend && npm run build"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
