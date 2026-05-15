@@ -86,13 +86,11 @@
     </div>
 
     <script>
-    // Backend base URL (set this to your deployed backend on Vercel)
+    // Backend base URL - UPDATE THIS WITH YOUR ACTUAL BACKEND URL
     const CONFIG = {
-        API_BASE:'todo-notepad-backend.vercel.app' // <-- replace
+        API_BASE: 'https://todo-notepad-backend.vercel.app' // Make sure this is your REAL backend URL
     };
     const API_URL = `${CONFIG.API_BASE}/api/v1`;
-
-    
     
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -105,9 +103,7 @@
         const messageDiv = document.getElementById('message');
         
         try {
-            // ✅ FIXED: Use CONFIG.API_URL instead of API_URL
             const response = await fetch(`${API_URL}/login`, {
-
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -133,12 +129,12 @@
                 messageDiv.style.display = 'block';
             }
         } catch (error) {
+            console.error('Login error:', error);
             messageDiv.textContent = 'Error: ' + error.message;
             messageDiv.className = 'message error';
             messageDiv.style.display = 'block';
         }
     });
-</script>
+    </script>
 </body>
 </html>
-
