@@ -9,8 +9,10 @@ import cookieParser from "cookie-parser";
 const app = express();
 
 app.use(cors({
-origin: '*',
-    credentials: true
+origin: 'https://todo-notepad-frontend.vercel.com',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 })); // Enable CORS for all routes
 app.use(express.json());//middleware to parse json data
 app.use(cookieParser())
