@@ -92,10 +92,8 @@
     <script>
     // Backend base URL (set this to your deployed backend on Vercel)
     const CONFIG = {
-        API_BASE : 'todo-notepad-backend.vercel.app' // <-- replace
+        API_URL : 'http://localhost:3000' // <-- replace
     };
-    const API_URL = `${CONFIG.API_BASE}/api/v1`;
-
 
         
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
@@ -111,8 +109,6 @@
             
             try {
                 const response = await fetch(`${API_URL}/register`, {
-
-
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
