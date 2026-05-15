@@ -253,9 +253,13 @@ body > button:last-of-type {
     <button>logout</button>
 
     <script>
+    // Backend base URL (set this to your deployed backend on Vercel)
     const CONFIG = {
-        API_URL : 'http://localhost:5500/todos',
-    }
+        API_BASE: 'https://YOUR-BACKEND-URL.vercel.app'
+    };
+    const API_URL = `${CONFIG.API_BASE}/api/v1/todos`;
+
+
 
 // this is to get token from localStorage
 const getToken = () => localStorage.getItem('token');

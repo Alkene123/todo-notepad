@@ -90,9 +90,13 @@
     </div>
 
     <script>
+    // Backend base URL (set this to your deployed backend on Vercel)
     const CONFIG = {
-        API_URL : 'http://localhost:3000'
-    }
+        API_BASE : 'https://YOUR-BACKEND-URL.vercel.app' // <-- replace
+    };
+    const API_URL = `${CONFIG.API_BASE}/api/v1`;
+
+
         
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -106,7 +110,9 @@
             const messageDiv = document.getElementById('message');
             
             try {
-                const response = await fetch(`${CONFIG.API_URL}/api/v1/register`, {
+                const response = await fetch(`${API_URL}/register`, {
+
+
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
