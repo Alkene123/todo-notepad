@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Register</title>
+    <title>Login</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -15,27 +15,23 @@
             background: #fff;
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 40px rgba(44, 62, 1, 0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 600px;
         }
         h1 {
             text-align: center;
-            color: #333;
-            margin-bottom: 30px;
+            color:black;
+            margin-bottom: 20px;
         }
         input {
             width: 100%;
             padding: 15px;
             margin-bottom: 15px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #ae070738;
             border-radius: 10px;
             font-size: 16px;
             box-sizing: border-box;
-        }
-        input:focus {
-            outline: none;
-            border-color: #6c5ce7;
         }
         button {
             width: 100%;
@@ -46,6 +42,7 @@
             border-radius: 10px;
             font-size: 16px;
             cursor: pointer;
+    
         }
         button:hover {
             background: #5b4cdb;
@@ -53,7 +50,7 @@
         p {
             text-align: center;
             margin-top: 20px;
-            color: #666;
+            color:ash;
         }
         a {
             color: #6c5ce7;
@@ -78,65 +75,70 @@
 </head>
 <body>
     <div class="container">
-        <h1> Register</h1>
+        <h1> Login</h1>
         <div id="message" class="message"></div>
-        <form id="registerForm">
-            <input type="text" name="name" placeholder="Name" required />
+        <form id="loginForm">
             <input type="email" name="email" placeholder="Email" required />
             <input type="password" name="password" placeholder="Password" required />
-            <button type="submit">Register</button>
+            <button type="submit">Login</button>
         </form>
-        <p>Already have an account? <a href="login.html">Login</a></p>
+        <p>Don't have an account? <a href="register.html">Register</a></p>
     </div>
 
     <script>
     // Backend base URL (set this to your deployed backend on Vercel)
     const CONFIG = {
-        API_URL : 'http://localhost:3000' // <-- replace
+        API_BASE:'https://your-backend.vercel.app' // <-- replace
     };
+    const API_URL = `${CONFIG.API_BASE}/api/v1`;
 
+    
+    
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = {
+            email: formData.get('email'),
+            password: formData.get('password')
+        };
         
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = {
-                name: formData.get('name'),
-                email: formData.get('email'),
-                password: formData.get('password')
-            };
+        const messageDiv = document.getElementById('message');
+        
+        try {
+            // ✅ FIXED: Use CONFIG.API_URL instead of API_URL
+            const response = await fetch(`${API_URL}/login`, {
+
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
             
-            const messageDiv = document.getElementById('message');
+            const result = await response.json();
             
-            try {
-                const response = await fetch(`${API_URL}/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    messageDiv.textContent = 'Registration successful! Redirecting to login...';
-                    messageDiv.className = 'message success';
-                    messageDiv.style.display = 'block';
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 1500);
-                } else {
-                    messageDiv.textContent = result.message || 'Registration failed';
-                    messageDiv.className = 'message error';
-                    messageDiv.style.display = 'block';
+            if (result.success) {
+                if (result.token) {
+                    localStorage.setItem('token', result.token);
                 }
-            } catch (error) {
-                messageDiv.textContent = 'Error: ' + error.message;
+                messageDiv.textContent = 'Login successful! Redirecting to todos...';
+                messageDiv.className = 'message success';
+                messageDiv.style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = 'todo.html';
+                }, 1500);
+            } else {
+                messageDiv.textContent = result.message || 'Login failed';
                 messageDiv.className = 'message error';
                 messageDiv.style.display = 'block';
             }
-        });
-    </script>
+        } catch (error) {
+            messageDiv.textContent = 'Error: ' + error.message;
+            messageDiv.className = 'message error';
+            messageDiv.style.display = 'block';
+        }
+    });
+</script>
 </body>
 </html>
 

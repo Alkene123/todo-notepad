@@ -1,16 +1,38 @@
 {
   "version": 2,
-  "buildCommand": null,
-  "devCommand": null,
-  "installCommand": null,
-  "outputDirectory": ".",
+  "builds": [
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.js",
+      "use": "@vercel/static"
+    }
+  ],
   "routes": [
     {
       "src": "/",
       "dest": "/index.html"
     },
     {
-      "src": "/(.*\\.(css|js|png|jpg|svg|ico))",
+      "src": "/login",
+      "dest": "/login.html"
+    },
+    {
+      "src": "/register",
+      "dest": "/register.html"
+    },
+    {
+      "src": "/todo",
+      "dest": "/todo.html"
+    },
+    {
+      "src": "/(.*\\.(html|css|js))",
       "dest": "/$1"
     },
     {
