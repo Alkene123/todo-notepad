@@ -253,13 +253,9 @@ body > button:last-of-type {
     <button>logout</button>
 
     <script>
-    // Backend base URL (set this to your deployed backend on Vercel)
     const CONFIG = {
-        API_BASE: 'todo-notepad-backend.vercel.app'
-    };
-    const API_URL = `${CONFIG.API_BASE}/api/v1/todos`;
-
-
+        API_URL : 'https://todo-notepad.onrender.com'
+    }
 
 // this is to get token from localStorage
 const getToken = () => localStorage.getItem('token');

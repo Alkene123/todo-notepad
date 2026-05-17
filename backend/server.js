@@ -1,31 +1,39 @@
 import app from "./app.js";
+import express from "express";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db.js";
+import path from "path";
+import { fileURLToPath } from 'url';
 
+dotenv.config({ path: ".env" });
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Log to verify URI is loaded
-console.log("MONGO_URI exists?", !!process.env.MONGO_URI);
+const PORT = process.env.PORT || 3000;
 
-if (process.env.MONGO_URI) {
-    const maskedUri = process.env.MONGO_URI.replace(/\/\/([^:]+):([^@]+)@/, '//****:****@');
-    console.log("Using URI:", maskedUri);
-}
+connectDB();
 
-const PORT = process.env.PORT || 5000;
+// app.use(express.static(path.join(__dirname, '../frontend')));
 
-const startServer = async () => {
-    try {
-        await connectDB();
-        console.log("Database ready, starting server...");
-        const server = app.listen(PORT, () => {
-            console.log(`✅ Server running on port ${PORT}`);
-        });
-    } catch (error) {
-        console.error("❌ Failed to start server:", error);
-        process.exit(1);
-    }
-};
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../fronted/login.html'));
+// });
 
-startServer();
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../frontend/login.html'));
+// });
+app.get('/', (req, res) => {
+    res.json({ 
+        status: "Backend is running!",
+        message: "API is live. Frontend files not yet deployed.",
+        endpoints: {
+            "GET /api/notes": "Get all notes",
+            "POST /api/notes": "Create a note",
+            // Add your other endpoints here
+        }
+    });
+});
+const server = app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
